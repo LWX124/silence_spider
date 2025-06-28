@@ -1,0 +1,74 @@
+# Web框架
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+websockets==12.0
+
+# 数据库
+sqlalchemy==2.0.23
+alembic==1.12.1
+asyncpg==0.29.0
+redis==5.0.1
+
+# 任务队列
+celery==5.3.4
+flower==2.0.1
+
+# 数据验证和序列化
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# HTTP客户端
+aiohttp==3.9.1
+httpx==0.25.2
+
+# 爬虫相关
+playwright==1.40.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+selenium==4.15.2
+
+# 数据处理
+pandas==2.1.4
+numpy==1.25.2
+
+# 图像处理
+pillow==10.1.0
+
+# 加密和安全
+cryptography==41.0.8
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# 日志和监控
+loguru==0.7.2
+prometheus-client==0.19.0
+
+# 工具库
+python-dotenv==1.0.0
+click==8.1.7
+rich==13.7.0
+typer==0.9.0
+
+# 开发工具
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+isort==5.12.0
+flake8==6.1.0
+mypy==1.7.1
+
+# 代理和网络
+mitmproxy==10.1.5
+requests==2.31.0
+
+# 全文搜索
+elasticsearch==8.11.0
+
+# 时间处理
+python-dateutil==2.8.2
+pytz==2023.3
+
+# 文件处理
+openpyxl==3.1.2
+python-docx==1.1.0 
