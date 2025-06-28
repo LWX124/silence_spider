@@ -72,8 +72,8 @@ services:
   # 前端服务
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: silence_spider_frontend
     ports:
       - "3000:3000"
