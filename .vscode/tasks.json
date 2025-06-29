@@ -1,0 +1,151 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "启动依赖服务",
+            "type": "shell",
+            "command": "./start_deps.sh",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "安装Python依赖",
+            "type": "shell",
+            "command": "pip",
+            "args": ["install", "-r", "requirements.txt"],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "数据库迁移",
+            "type": "shell",
+            "command": "alembic",
+            "args": ["upgrade", "head"],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "创建迁移",
+            "type": "shell",
+            "command": "alembic",
+            "args": ["revision", "--autogenerate", "-m", "Auto migration"],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "代码格式化",
+            "type": "shell",
+            "command": "black",
+            "args": ["."],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "导入排序",
+            "type": "shell",
+            "command": "isort",
+            "args": ["."],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "代码检查",
+            "type": "shell",
+            "command": "flake8",
+            "args": ["."],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$flake8"]
+        },
+        {
+            "label": "运行测试",
+            "type": "shell",
+            "command": "pytest",
+            "args": ["-v"],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "停止Docker服务",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["down"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+} 

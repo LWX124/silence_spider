@@ -1,0 +1,30 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.flake8",
+        "ms-python.mypy-type-checker",
+        "ms-python.pylint",
+        "ms-python.pytest-adapter",
+        "ms-python.debugpy",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-docker",
+        "ms-azuretools.vscode-docker",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "vue.volar",
+        "vue.vscode-typescript-vue-plugin",
+        "ms-vscode.vscode-eslint",
+        "ms-vscode.vscode-prettier",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "ms-vscode.vscode-github-issue-notebooks",
+        "ms-vscode.vscode-markdown-all-in-one",
+        "yzhang.markdown-all-in-one",
+        "ms-vscode.vscode-rest-client",
+        "humao.rest-client"
+    ]
+} 
