@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     
     # 数据库配置
     DATABASE_URL: str = Field(
-        default="postgresql+asyncpg://user:password@localhost/silence_spider",
+        default="postgresql+asyncpg://spider_user:spider_password@localhost:5432/silence_spider",
         env="DATABASE_URL"
     )
     

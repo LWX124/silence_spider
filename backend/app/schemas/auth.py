@@ -2,6 +2,7 @@
 认证相关的Pydantic模型
 """
 
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
@@ -19,7 +20,7 @@ class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
-    full_name: str | None = None
+    full_name: Optional[str] = None
 
 
 class UserLogin(BaseModel):

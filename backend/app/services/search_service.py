@@ -15,7 +15,7 @@ class SearchService:
     """搜索服务类"""
     
     def __init__(self, es_host: str = "localhost", es_port: int = 9200):
-        self.es = Elasticsearch([{'host': es_host, 'port': es_port}])
+        self.es = Elasticsearch([{'host': es_host, 'port': es_port, 'scheme': 'http'}])
         self.index_prefix = "gzh_"
     
     def create_index(self, nickname: str) -> bool:
@@ -24,52 +24,50 @@ class SearchService:
             index_name = f"{self.index_prefix}{nickname}"
             if not self.es.indices.exists(index=index_name):
                 # 创建索引映射
-                mapping = {
-                    "mappings": {
-                        "properties": {
-                            "title": {
-                                "type": "text",
-                                "analyzer": "ik_max_word",
-                                "search_analyzer": "ik_smart"
-                            },
-                            "digest": {
-                                "type": "text",
-                                "analyzer": "ik_max_word",
-                                "search_analyzer": "ik_smart"
-                            },
-                            "content": {
-                                "type": "text",
-                                "analyzer": "ik_max_word",
-                                "search_analyzer": "ik_smart"
-                            },
-                            "author": {
-                                "type": "keyword"
-                            },
-                            "nickname": {
-                                "type": "keyword"
-                            },
-                            "p_date": {
-                                "type": "date"
-                            },
-                            "content_url": {
-                                "type": "keyword"
-                            },
-                            "read_num": {
-                                "type": "integer"
-                            },
-                            "like_num": {
-                                "type": "integer"
-                            },
-                            "comment_num": {
-                                "type": "integer"
-                            },
-                            "reward_num": {
-                                "type": "integer"
-                            }
+                mappings = {
+                    "properties": {
+                        "title": {
+                            "type": "text",
+                            "analyzer": "ik_max_word",
+                            "search_analyzer": "ik_smart"
+                        },
+                        "digest": {
+                            "type": "text",
+                            "analyzer": "ik_max_word",
+                            "search_analyzer": "ik_smart"
+                        },
+                        "content": {
+                            "type": "text",
+                            "analyzer": "ik_max_word",
+                            "search_analyzer": "ik_smart"
+                        },
+                        "author": {
+                            "type": "keyword"
+                        },
+                        "nickname": {
+                            "type": "keyword"
+                        },
+                        "p_date": {
+                            "type": "date"
+                        },
+                        "content_url": {
+                            "type": "keyword"
+                        },
+                        "read_num": {
+                            "type": "integer"
+                        },
+                        "like_num": {
+                            "type": "integer"
+                        },
+                        "comment_num": {
+                            "type": "integer"
+                        },
+                        "reward_num": {
+                            "type": "integer"
                         }
                     }
                 }
-                self.es.indices.create(index=index_name, body=mapping)
+                self.es.indices.create(index=index_name, mappings=mappings)
                 logger.info(f"创建索引: {index_name}")
                 return True
             return True
@@ -82,8 +80,6 @@ class SearchService:
         try:
             index_name = f"{self.index_prefix}{nickname}"
             doc_id = article_data.get('content_url', '')
-            
-            # 准备索引数据
             doc = {
                 'title': article_data.get('title', ''),
                 'digest': article_data.get('digest', ''),
@@ -98,8 +94,7 @@ class SearchService:
                 'reward_num': article_data.get('reward_num', 0),
                 'indexed_at': datetime.now()
             }
-            
-            self.es.index(index=index_name, id=doc_id, body=doc)
+            self.es.index(index=index_name, id=doc_id, document=doc)
             return True
         except Exception as e:
             logger.error(f"索引文章失败: {e}")
@@ -113,17 +108,16 @@ class SearchService:
                        _size: int = 10) -> Dict[str, Any]:
         """搜索文章"""
         try:
-            # 构建搜索查询
+            if gzhs is None:
+                gzhs = []
+            if fields is None:
+                fields = []
             if gzhs and gzhs != ['全部']:
                 indices = [f"{self.index_prefix}{gzh}" for gzh in gzhs]
             else:
                 indices = f"{self.index_prefix}*"
-            
-            # 构建字段查询
             if not fields or '全部' in fields:
                 fields = ['title', 'digest', 'content']
-            
-            # 构建查询条件
             should_clauses = []
             for field in fields:
                 should_clauses.append({
@@ -134,49 +128,40 @@ class SearchService:
                         }
                     }
                 })
-            
             query = {
                 "bool": {
                     "should": should_clauses,
                     "minimum_should_match": 1
                 }
             }
-            
-            # 执行搜索
             response = self.es.search(
                 index=indices,
-                body={
-                    "query": query,
-                    "highlight": {
-                        "fields": {
-                            "title": {},
-                            "digest": {},
-                            "content": {"fragment_size": 200}
-                        }
-                    },
-                    "sort": [
-                        {"_score": {"order": "desc"}},
-                        {"p_date": {"order": "desc"}}
-                    ],
-                    "from": _from,
-                    "size": _size
-                }
+                query=query,
+                highlight={
+                    "fields": {
+                        "title": {},
+                        "digest": {},
+                        "content": {"fragment_size": 200}
+                    }
+                },
+                sort=[
+                    {"_score": {"order": "desc"}},
+                    {"p_date": {"order": "desc"}}
+                ],
+                from_=_from,
+                size=_size
             )
-            
-            # 处理搜索结果
             results = []
             for hit in response['hits']['hits']:
                 result = hit['_source']
                 result['score'] = hit['_score']
                 result['highlights'] = hit.get('highlight', {})
                 results.append(result)
-            
             return {
                 'total': response['hits']['total']['value'],
                 'results': results,
                 'took': response['took']
             }
-            
         except Exception as e:
             logger.error(f"搜索失败: {e}")
             return {'total': 0, 'results': [], 'error': str(e)}
